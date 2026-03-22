@@ -84,7 +84,7 @@ public class OrderService {
 
     public OrderEntity cancelOrder(UUID orderId) {
         OrderEntity order = getOrderById(orderId);
-
+        order.cancel();
         order.getItems().forEach(item -> {
             StockEntity stock = stockRepository.findByProductId(item.getProduct().getId())
                     .orElseThrow(() -> new IllegalArgumentException(
