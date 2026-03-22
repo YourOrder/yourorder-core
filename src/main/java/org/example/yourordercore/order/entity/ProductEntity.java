@@ -27,4 +27,11 @@ public class ProductEntity {
     private BigDecimal price;
 
     private String description;
+
+    @Column(name = "supplier_id")
+    private UUID supplierId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private CategoryEntity category;
 }
