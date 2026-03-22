@@ -12,7 +12,6 @@ import org.example.yourordercore.order.repository.OrderRepository;
 import org.example.yourordercore.order.repository.ProductRepository;
 import org.example.yourordercore.order.repository.StockRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.UUID;
 
 @Service
@@ -24,11 +23,30 @@ public class OrderService {
     private final StockRepository stockRepository;
 
     public OrderEntity createOrder(OrderRequest request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Order request cannot be null");
+        }
+        if (request.getUserId() == null) {
+            throw new IllegalArgumentException("User id cannot be null");
+        }
+        if (request.getItems() == null || request.getItems().isEmpty()) {
+            throw new IllegalArgumentException("Order must contain at least one item");
+        }
         OrderEntity order = OrderEntity.builder()
                 .userId(request.getUserId())
                 .build();
 
         for (OrderItemRequest itemRequest : request.getItems()) {
+            if (itemRequest == null) {
+                throw new IllegalArgumentException("Order item request cannot be null");
+            }
+            if (itemRequest.getProductId() == null) {
+                throw new IllegalArgumentException("Product id cannot be null");
+            }
+            if (itemRequest.getQuantity() == null || itemRequest.getQuantity() <= 0) {
+                throw new IllegalArgumentException("Quantity must be greater than zero");
+            }
+
             ProductEntity product = productRepository.findById(itemRequest.getProductId())
                     .orElseThrow(() -> new IllegalArgumentException(
                             "Product not found: " + itemRequest.getProductId()
@@ -49,8 +67,6 @@ public class OrderService {
 
             order.addItem(orderItem);
         }
-
-        order.recalculateTotalAmount();
         return orderRepository.save(order);
     }
 
