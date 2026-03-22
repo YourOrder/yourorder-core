@@ -1,6 +1,7 @@
 package org.example.yourordercore.order.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
@@ -20,18 +21,17 @@ public class ProductEntity {
     private UUID id;
 
     @Column(nullable = false, length = 100)
+    @NotBlank
     private String name;
 
-    @Column(nullable = false, name = "price", precision = 10, scale = 2)
+    @Column(nullable = false, precision = 10, scale = 2)
     @Positive
     private BigDecimal price;
 
-    private String description;
-
-    @Column(name = "supplier_id")
+    @Column(name = "supplier_id", nullable = false)
     private UUID supplierId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id",  nullable = false)
     private CategoryEntity category;
 }
