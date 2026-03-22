@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -16,6 +17,7 @@ import java.util.List;
 @Builder
 public class OrderRequest {
     @NotNull
+    private UUID userId;
     @NotEmpty
     @Valid
     List<OrderItemRequest> items;
