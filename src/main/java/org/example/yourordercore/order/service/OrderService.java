@@ -1,5 +1,6 @@
 package org.example.yourordercore.order.service;
 
+import org.example.yourordercore.order.status.OrderStatus;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.yourordercore.order.dto.OrderItemRequest;
@@ -92,8 +93,6 @@ public class OrderService {
                     ));
             stock.releaseReservation(item.getQuantity());
         });
-
-        order.cancel();
         return orderRepository.save(order);
     }
 
