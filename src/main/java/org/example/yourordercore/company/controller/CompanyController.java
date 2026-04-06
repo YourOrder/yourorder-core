@@ -19,9 +19,6 @@ public class CompanyController {
             @RequestHeader(value = "X-User-Id", required = false) String userId,
             @RequestBody CompanyRequest request
     ) {
-
-        System.out.println("АААА ЗАПРОС");
-        System.out.println(userId);
         CompanyEntity company = companyService.createCompany(userId, request);
         return mapToResponse(company);
     }
