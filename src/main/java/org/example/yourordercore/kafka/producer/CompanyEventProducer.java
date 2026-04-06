@@ -1,6 +1,7 @@
 package org.example.yourordercore.kafka.producer;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.yourordercore.kafka.event.CompanyCreatedEvent;
 import org.example.yourordercore.kafka.event.CompanyUpdatedEvent;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CompanyEventProducer {
@@ -19,7 +21,19 @@ public class CompanyEventProducer {
         CompanyCreatedEvent event =
                 new CompanyCreatedEvent(companyId, ownerId);
 
-        kafkaTemplate.send("company-created", event);
+        log.info("🚀 Sending CompanyCreatedEvent: {}", event);
+
+        kafkaTemplate.send("company-created", event)
+                .whenComplete((result, ex) -> {
+                    if (ex != null) {
+                        log.error("❌ Failed to send CompanyCreatedEvent", ex);
+                    } else {
+                        log.info("✅ Event sent to topic={}, partition={}, offset={}",
+                                result.getRecordMetadata().topic(),
+                                result.getRecordMetadata().partition(),
+                                result.getRecordMetadata().offset());
+                    }
+                });
     }
 
     public void sendCompanyUpdated(UUID companyId, UUID ownerId) {

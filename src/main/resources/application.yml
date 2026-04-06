@@ -25,3 +25,8 @@ spring:
 
       properties:
         spring.json.add.type.headers: true
+
+logging:
+  level:
+    org.springframework.kafka: DEBUG
+    org.apache.kafka: DEBUG

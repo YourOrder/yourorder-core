@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
@@ -16,14 +19,17 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyEventProducer companyEventProducer;
 
-
     public CompanyEntity createCompany(String userId, CompanyRequest request) {
+
+        log.info("📦 Creating company for userId={}", userId);
+
         CompanyEntity company = new CompanyEntity();
         company.setName(request.getCompanyName());
         company.setUserId(UUID.fromString(userId));
 
-
         CompanyEntity saved = companyRepository.save(company);
+
+        log.info("💾 Company saved with id={}", saved.getId());
 
         companyEventProducer.sendCompanyCreated(
                 saved.getId(),
