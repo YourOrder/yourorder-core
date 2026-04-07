@@ -2,6 +2,7 @@ package org.example.yourordercore.company.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.yourordercore.company.dto.CompanyRequest;
@@ -26,7 +27,7 @@ public class CompanyController {
     @PostMapping
     public CompanyResponse createCompany(
             @RequestHeader(value = "X-User-Id", required = false) String userId,
-            @RequestBody CompanyRequest request
+            @Valid @RequestBody CompanyRequest request
     ) {
         CompanyEntity company = companyService.createCompany(userId, request);
         return mapToResponse(company);
