@@ -26,7 +26,7 @@ public class CompanyController {
     )
     @PostMapping
     public CompanyResponse createCompany(
-            @RequestHeader(value = "X-User-Id", required = false) String userId,
+            @RequestHeader(value = "X-User-Id") String userId,
             @Valid @RequestBody CompanyRequest request
     ) {
         CompanyEntity company = companyService.createCompany(userId, request);
