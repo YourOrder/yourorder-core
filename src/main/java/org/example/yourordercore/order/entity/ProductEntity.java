@@ -34,4 +34,53 @@ public class ProductEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id",  nullable = false)
     private CategoryEntity category;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer quantity = 0;
+
+    @Column(name = "reserved_quantity", nullable = false)
+    @Builder.Default
+    private Integer reservedQuantity = 0;
+
+    public int getAvailableQuantity() {
+        return quantity - reservedQuantity;
+    }
+
+    public void reserve(int amount) {
+        validatePositiveAmount(amount);
+
+        if (getAvailableQuantity() < amount) {
+            throw new IllegalStateException("Not enough stock");
+        }
+
+        reservedQuantity += amount;
+    }
+
+    public void releaseReservation(int amount) {
+        validatePositiveAmount(amount);
+
+        if (reservedQuantity < amount) {
+            throw new IllegalStateException("Cannot release more than reserved");
+        }
+
+        reservedQuantity -= amount;
+    }
+
+    public void confirmReservation(int amount) {
+        validatePositiveAmount(amount);
+
+        if (reservedQuantity < amount) {
+            throw new IllegalStateException("Cannot confirm more than reserved");
+        }
+
+        reservedQuantity -= amount;
+        quantity -= amount;
+    }
+
+    private void validatePositiveAmount(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+    }
 }

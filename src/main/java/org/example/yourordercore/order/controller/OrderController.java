@@ -1,12 +1,15 @@
 package org.example.yourordercore.order.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.yourordercore.order.dto.OrderFilter;
 import org.example.yourordercore.order.dto.OrderItemResponse;
 import org.example.yourordercore.order.dto.OrderRequest;
 import org.example.yourordercore.order.dto.OrderResponse;
 import org.example.yourordercore.order.entity.OrderEntity;
 import org.example.yourordercore.order.entity.OrderItemEntity;
 import org.example.yourordercore.order.service.OrderService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +35,15 @@ public class OrderController {
         return mapToResponse(order);
     }
 
+    @GetMapping()
+    public Page<OrderResponse> getOrders(
+            OrderFilter filter,
+            Pageable pageable
+    ) {
+        return orderService.getOrders(filter, pageable)
+                .map(this::mapToResponse);
+    }
+
     @PostMapping("/{id}/confirm")
     public OrderResponse confirmOrder(@PathVariable UUID id) {
         OrderEntity order = orderService.confirmOrder(id);
@@ -44,9 +56,9 @@ public class OrderController {
         return mapToResponse(order);
     }
 
-    @PostMapping("/{id}/pay")
-    public OrderResponse markOrderAsPaid(@PathVariable UUID id) {
-        OrderEntity order = orderService.markOrderAsPaid(id);
+    @PutMapping("/{id}/pay")
+    public OrderResponse payOrder(@PathVariable UUID id) {
+        OrderEntity order = orderService.pay(id);
         return mapToResponse(order);
     }
 

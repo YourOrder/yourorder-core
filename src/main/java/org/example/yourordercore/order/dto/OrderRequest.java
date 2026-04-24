@@ -16,9 +16,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class OrderRequest {
-    @NotNull
+    @NotNull(message = "User id cannot be null")
     private UUID userId;
-    @NotEmpty
+    @NotEmpty(message = "Order must contain at least one item")
     @Valid
-    List<OrderItemRequest> items;
+    private List<OrderItemRequest> items;
 }
